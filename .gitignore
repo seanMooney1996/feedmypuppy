@@ -1,0 +1,88 @@
+# Python __pycache__ and compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+
+# Virtual environments
+venv/
+env/
+.venv/
+.virtualenv/
+
+# Environment variables and secrets
+.env
+*.pem
+*.key
+google_auth_secrets.json
+
+# Flask-related caches and logs
+instance/
+logs/
+*.log
+
+# Python egg files
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Byte-compiled / optimized / DLL files
+*.so
+*.dll
+
+# Database
+*.sqlite
+*.db
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Editors and IDEs
+.vscode/
+.idea/
+*.iml
+
+# Dependencies and packaging
+pip-log.txt
+pip-delete-this-directory.txt
+*.whl
+
+# Test coverage files
+.coverage
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# Pytest
+pytest_cache/
+
+# Documentation artifacts
+docs/_build/
+
+# Docker files
+docker-compose.override.yml
+*.dockerfile
+docker-compose.yml
+
+# Miscellaneous
+*.bak
+*.tmp
+*.swp
+*.sublime-workspace
+
+# Node (optional: if frontend files exist)
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Security-sensitive files
+config.json
+credentials.json
+keypair*.pem
