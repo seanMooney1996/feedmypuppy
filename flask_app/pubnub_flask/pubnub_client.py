@@ -2,10 +2,8 @@ from pubnub.pnconfiguration import PNConfiguration
 from pubnub.models.consumer.v3.channel import Channel
 from pubnub.pubnub import PubNub, SubscribeCallback
 from pubnub.exceptions import PubNubException
-from fmp_pi.pubnub.listeners import PubNubListener
+from pubnub_flask.listeners import PubNubListener
 import os
-import threading
-import time
 from dotenv import load_dotenv
 
 
@@ -53,16 +51,27 @@ class PubNubClient:
         self.pubnub.subscribe().channels(channel).execute()
         
         
-    def initiate_token_refresh(self,token):
-        while True:
-            parsed_token = self.pubnub.parse_token(token)
-            ttl_minutes = int(parsed_token.get('ttl'))
-            print("Parsed token TTL ->", ttl_minutes)
-            sleep_time = (ttl_minutes * 60) - 30
-            time.sleep(sleep_time)
-            print("Setting new token")
-            token = self.request_auth_token()
-            self.pubnub.set_token(token)
-            #test the token
+    def generate_token_client(self):
+        try:
+            channels = [
+            Channel.id("ppe_violation").read().write,
+            ]
+            envelope = self.pubnub.grant_token().channels(channels).ttl(20).sync()
+            return envelope.result.token
+        except Exception as e:
+            print(f"Token generation failed: {e}")
+            return True
+        
+
+    def generate_token_pi(self):
+        try:
+            channels = [
+            Channel.id("ppe_violation").read().write(),
+            ]
+            envelope = self.pubnub.grant_token().channels(channels).ttl(20).sync()
+            return envelope.result.token
+        except Exception as e:
+            print(f"Token generation failed: {e}")
+            return True
         
         

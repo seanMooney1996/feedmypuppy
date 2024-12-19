@@ -2,9 +2,17 @@ from pubnub.pnconfiguration import PNConfiguration
 from pubnub.models.consumer.v3.channel import Channel
 from pubnub.pubnub import PubNub, SubscribeCallback
 from pubnub.exceptions import PubNubException
-from flask_app.pubnub.listeners import PubNubListener
+from pubnub_pi.listeners import PubNubListener
 import os
+import threading
+import time
 from dotenv import load_dotenv
+
+load_dotenv()
+SECRET_API_KEY=os.getenv('SECRET_API_KEY')
+
+CIPHER_SERVER_URL='http://127.0.0.1:5000/get_cipher_key'
+PUBNUB_TOKEN_URL='http://127.0.0.1:5000/get_pubnub_token'
 
 
 class PubNubClient:
@@ -50,28 +58,38 @@ class PubNubClient:
         # Subscribe to a specified channel
         self.pubnub.subscribe().channels(channel).execute()
         
+    def unsubscribe_to_channel(self, channel):
+        self.pubnub.unsubscribe().channels(channel).execute()
         
-    def generate_token_client(self):
-        try:
-            channels = [
-            Channel.id("ppe_violation").read().write,
-            ]
-            envelope = self.pubnub.grant_token().channels(channels).ttl(20).sync()
-            return envelope.result.token
-        except Exception as e:
-            print(f"Token generation failed: {e}")
-            return True
         
-
-    def generate_token_pi(self):
-        try:
-            channels = [
-            Channel.id("ppe_violation").read().write(),
-            ]
-            envelope = self.pubnub.grant_token().channels(channels).ttl(20).sync()
-            return envelope.result.token
-        except Exception as e:
-            print(f"Token generation failed: {e}")
-            return True
+        def request_cipher_key(self):
+            headers = {
+                "Authorization": SECRET_API_KEY
+            }
+            try:
+                response = requests.post(CIPHER_SERVER_URL, headers=headers)
+                data = response.json()
+                if "cipher_key" in data:
+                    print("CIPHER RECIEVED ", data["cipher_key"])
+                    return data["cipher_key"]
+                else:
+                    print("Failed to retrieve cipher key")
+                    return None
+            except Exception as e:
+                print(f"Error fetching cipher key: {e}")
+                return None
+        
+        
+    def initiate_token_refresh(self,token):
+        while True:
+            parsed_token = self.pubnub.parse_token(token)
+            ttl_minutes = int(parsed_token.get('ttl'))
+            print("Parsed token TTL ->", ttl_minutes)
+            sleep_time = (ttl_minutes * 60) - 30
+            time.sleep(sleep_time)
+            print("Setting new token")
+            token = self.request_auth_token()
+            self.pubnub.set_token(token)
+            #test the token
         
         
