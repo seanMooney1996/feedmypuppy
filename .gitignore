@@ -16,6 +16,7 @@ env/
 *.pem
 *.key
 google_auth_secrets.json
+*.ppk
 
 # Flask-related caches and logs
 instance/

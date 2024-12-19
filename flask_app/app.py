@@ -1,7 +1,7 @@
 from flask import Flask, render_template
 from mongodb.mongo_client import MongoDBClient
-from pubnub.pubnub_client import PubNubClient
-from pubnub.handlers import Channel_Handler
+from pubnub_flask.pubnub_client import PubNubClient
+from pubnub_flask.handlers import Channel_Handler
 from cryptography.fernet import Fernet
 app = Flask(__name__)
 
