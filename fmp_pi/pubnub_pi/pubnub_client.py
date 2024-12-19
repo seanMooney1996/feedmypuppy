@@ -2,6 +2,7 @@ from pubnub.pnconfiguration import PNConfiguration
 from pubnub.models.consumer.v3.channel import Channel
 from pubnub.pubnub import PubNub, SubscribeCallback
 from pubnub.exceptions import PubNubException
+import requests
 from pubnub_pi.listeners import PubNubListener
 import os
 import threading
@@ -26,16 +27,18 @@ class PubNubClient:
 
     def initiate_pubnub(self):
         try:
-            print("Cipher key in pubnub config ",self.cipher)
             pnconfig = PNConfiguration()
             pnconfig.publish_key = os.getenv("PUBLISH_PUBNUB_KEY")
             pnconfig.subscribe_key = os.getenv("SUBSCRIBE_PUBNUB_KEY")
-            pnconfig.secret_key = os.getenv("SECRET_PUBNUB_KEY")
             pnconfig.ssl = True
-            pnconfig.cipher_key = self.cipher
+            token = self.request_auth_token()
+            pnconfig.auth_key = token
+            pnconfig.cipher_key = self.request_cipher_key()
             pnconfig.uuid = os.getenv("PUBNUB_USERID")
             self.pubnub = PubNub(pnconfig)
             self.pubnub.add_listener(PubNubListener(self.handlers))
+            refresh_thread = threading.Thread(target=self.initiate_token_refresh, args=(token,), daemon=True)
+            refresh_thread.start()
             print("PubNub connected successfully")
         except Exception as e:
             print(f"PubNub connection failed: {e}")
@@ -62,23 +65,41 @@ class PubNubClient:
         self.pubnub.unsubscribe().channels(channel).execute()
         
         
-        def request_cipher_key(self):
-            headers = {
-                "Authorization": SECRET_API_KEY
-            }
-            try:
-                response = requests.post(CIPHER_SERVER_URL, headers=headers)
-                data = response.json()
-                if "cipher_key" in data:
-                    print("CIPHER RECIEVED ", data["cipher_key"])
-                    return data["cipher_key"]
-                else:
-                    print("Failed to retrieve cipher key")
-                    return None
-            except Exception as e:
-                print(f"Error fetching cipher key: {e}")
+    def request_auth_token(self):
+        print("secretapikey  ", SECRET_API_KEY)
+        headers = {
+            "Authorization": SECRET_API_KEY
+        }
+        try:
+            response = requests.post(PUBNUB_TOKEN_URL, headers=headers)
+            data = response.json()
+            if "token" in data:
+                print("TOKEN RECIEVED ", data["token"])
+                return data["token"]
+            else:
+                print("Failed to retrieve pubnub token")
                 return None
-        
+        except Exception as e:
+            print(f"Error fetching pubnub token: {e}")
+            return None
+
+
+    def request_cipher_key(self):
+        headers = {
+            "Authorization": SECRET_API_KEY
+        }
+        try:
+            response = requests.post(CIPHER_SERVER_URL, headers=headers)
+            data = response.json()
+            if "cipher_key" in data:
+                print("CIPHER RECIEVED ", data["cipher_key"])
+                return data["cipher_key"]
+            else:
+                print("Failed to retrieve cipher key")
+                return None
+        except Exception as e:
+            print(f"Error fetching cipher key: {e}")
+            return None        
         
     def initiate_token_refresh(self,token):
         while True:
