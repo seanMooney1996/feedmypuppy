@@ -1,0 +1,15 @@
+#layoutContainer {
+    min-width: 100vw;
+    display: flex;
+    min-height: 100vh;
+    background-color: aliceblue;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+body {
+    margin:0px;
+    padding:0px;
+}
+

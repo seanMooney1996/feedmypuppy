@@ -72,4 +72,14 @@ class MongoDBClient:
                 return []     
         
         
+    @mongo_log(action="FIND_ONE", collection="user")
+    def get_user_by_email(self,email):
+        try:
+            user = self.user_collection.find_one({"email":email})
+            print("Retrieved user ",user)
+            return user
+        except Exception as e:
+            print(f"Failed to user by email from MongoDB: {e}")
+            return None
+        
         

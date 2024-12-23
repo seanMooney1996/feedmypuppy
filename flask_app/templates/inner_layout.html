@@ -1,0 +1,14 @@
+{% extends "main_layout.html" %} {% block body %}
+    <div class="navBar">
+        <button onclick="logout()">Logout Button</button>
+    </div>
+    <div>
+        inner container
+        {% block inner_body  %} {% endblock %}
+    </div>
+    <script>
+        function logout(){
+            window.location.href = `/logout`;
+        }
+    </script>
+{% endblock %}
