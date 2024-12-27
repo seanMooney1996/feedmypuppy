@@ -27,6 +27,7 @@ class MongoDBClient:
             self.client = MongoClient(uri, server_api=ServerApi('1'))
             self.db = self.client['feedmypuppy']
             self.user_collection = self.db['user']
+            self.dispense_event_collection = self.db['dispense_event']
             self.log_collection = self.db['logs']
             self.fs = gridfs.GridFS(self.db)
             print("MongoDB connected successfully")
@@ -81,5 +82,14 @@ class MongoDBClient:
         except Exception as e:
             print(f"Failed to user by email from MongoDB: {e}")
             return None
-        
+ 
+    @mongo_log(action="FIND", collection="feed")
+    def get_feed_data(self):
+        try:
+            events = self.dispense_event_collection.find({},{"_id": 0})
+            print("Retreived all feed data",events)
+            return events
+        except Exception as e:
+            print(f"Failed to get feed data : {e}")
+            return None       
         

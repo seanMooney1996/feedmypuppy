@@ -1,10 +1,14 @@
 {% extends "main_layout.html" %} {% block body %}
     <div class="navBar">
-        <button onclick="logout()">Logout Button</button>
+        <div class="innerWidth">
+            <button onclick="logout()">Logout Button</button>
+        </div>
     </div>
-    <div>
-        inner container
-        {% block inner_body  %} {% endblock %}
+    <div class="innerContainer">
+        <div class="innerWidth">
+            {% block inner_body  %} {% endblock %}
+        </div>
+        
     </div>
     <script>
         function logout(){

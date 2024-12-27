@@ -1,25 +1,81 @@
 {% extends "inner_layout.html" %}
 {% block inner_body %}
-    <h1>Users List</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>User ID</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Access Level</th>
-                <th>Email</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for user in users %}
-            <tr>
-                <td>{{ user['user_id'] }}</td>
-                <td>{{ user['f_name'] }}</td>
-                <td>{{ user['s_name'] }}</td>
-                <td>{{ user['email'] }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<script src="{{ url_for('static', filename='js/feedTable.js') }}"></script>
+
+<script>
+    const data = {{ dispense_data | tojson }};
+    console.log("data in script ",data)
+    window.addEventListener("load", () => {
+       filterTable(0, data);
+  });
+    function handlePreviousClick(){
+        filterTable(-1, data);
+    }
+    function handleNextClick(){
+        filterTable(1, data);
+    }
+
+</script>
+
+<div class="content-container">
+<div class="table-header display-flex-horizontal">
+    <div class="table-header-inner">
+        <div class="halfsize thirdsplit">
+            <h1>Date thing</h1>
+        </div>
+        <div class="halfsize 2 third2split">
+            <div class="thirdsplit flex-reverse-row">            
+                <button class="buttontable" onclick="handlePreviousClick()" >
+                Previous
+            </button>
+        </div>
+        <div class="thirdsplit display-flex-horizontal">
+            <h2 id="whenstring">Today</h2>
+        </div>           
+            <div  class="thirdsplit  flex-row">            
+                <button class="buttontable"  onclick="handleNextClick()" id="nextButton">
+                Next
+            </button>
+        </div>
+
+        </div>
+    </div>
+</div>
+<div class="horizontal">
+<div class="side-bar">
+    <div class="full-box">
+        1
+    </div> 
+    <div class="full-box">
+        2
+    </div> 
+    <div class="full-box">
+        3
+    </div> 
+    <div class="full-box">
+        4
+    </div> 
+    <div class="full-box">
+        5
+    </div> 
+</div>
+<div class="table-container-outer">
+    <div class="table-container">
+        <table id="dispenseTable">
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Dispensed (kg)</th>
+                    <th>Eaten (kg)</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <h1 id="dataMessage">No Data for this day.</h1>
+    </div>
+</div>
+</div>
+</div>
 {% endblock %}

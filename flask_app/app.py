@@ -1,3 +1,4 @@
+from datetime import datetime
 from functools import wraps
 import os
 import pathlib
@@ -46,6 +47,12 @@ channel_handler.add_pubnub_client(pubnub)
 pubnub.subscribe_to_channel("test_chan")
 
 
+@app.template_filter('datetimeformat')
+def format_datetime(value):
+    value = datetime.fromisoformat(value)
+    return value.strftime('%b %d, %Y %I:%M %p') 
+
+
 def login_is_required(function):
     @wraps(function)
     def wrapper(*args, **kwargs):
@@ -60,8 +67,8 @@ def login_is_required(function):
 @login_is_required
 def index():
     try:
-        users = mongodb.get_users()
-        return render_template('index.html',users = users)
+        dispense_data = list(mongodb.get_feed_data())
+        return render_template('index.html',dispense_data = dispense_data)
     except Exception as e:
         return f"An error occurred: {e}"
     

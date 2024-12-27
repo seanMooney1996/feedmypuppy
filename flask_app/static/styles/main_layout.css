@@ -3,7 +3,7 @@
     display: flex;
     min-height: 100vh;
     background-color: aliceblue;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     flex-wrap: wrap;
     flex-direction: column;
@@ -11,5 +11,6 @@
 body {
     margin:0px;
     padding:0px;
+    min-height:100vh;
 }
 
