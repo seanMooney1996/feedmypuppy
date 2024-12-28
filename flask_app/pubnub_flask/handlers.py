@@ -14,3 +14,6 @@ class Channel_Handler:
         print(f"Handling scan data channel: {data}") 
         self.pubnub_client.publish_message("return_test_chan","Return message")
         
+
+
+        
