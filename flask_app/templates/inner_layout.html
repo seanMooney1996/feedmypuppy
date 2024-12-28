@@ -1,6 +1,8 @@
 {% extends "main_layout.html" %} {% block body %}
     <div class="navBar">
         <div class="innerWidth">
+            <button onclick="directFeedData()">Feed Data</button>
+            <button onclick="directFeedSettings()">Feed Settings</button>
             <button onclick="logout()">Logout Button</button>
         </div>
     </div>
@@ -8,11 +10,20 @@
         <div class="innerWidth">
             {% block inner_body  %} {% endblock %}
         </div>
-        
     </div>
     <script>
         function logout(){
             window.location.href = `/logout`;
+        }
+        function directFeedData(){
+            if (window.location.href !== `/` ){
+                window.location.href = `/`;
+            }
+        }
+        function directFeedSettings(){
+            if (window.location.href !== `/settings` ){
+                window.location.href = `/settings`;
+            }
         }
     </script>
 {% endblock %}

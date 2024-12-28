@@ -72,6 +72,17 @@ def index():
     except Exception as e:
         return f"An error occurred: {e}"
     
+
+@app.route('/settings')
+@login_is_required
+def settings():
+    try:
+        dispenser_settings = mongodb.get_dispenser_settings()
+        print(dispenser_settings)
+        return render_template('settings.html',dispenser_settings = dispenser_settings)
+    except Exception as e:
+        return f"An error occurred: {e}"
+    
     
 @app.route('/login')
 def login():

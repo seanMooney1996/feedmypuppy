@@ -17,6 +17,15 @@ function filterTable(increment, data) {
         nextButton.style.display = "block"
     } 
     const dispenseTable = document.querySelector('#dispenseTable tbody');
+    const dayString = document.querySelector('#dayString');
+    dayString.innerHTML = dayStarting.toISOString()
+    const formattedDate = new Date(dayStarting).toLocaleString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    });
+    dayString.innerHTML = formattedDate
     dispenseTable.innerHTML = '';
     const dataMessage = document.querySelector('#dataMessage');
     data.length == 0 ? dataMessage.style.display = "block" : dataMessage.style.display = "none"
@@ -30,11 +39,10 @@ function filterTable(increment, data) {
             day: 'numeric',
             hour: '2-digit',
             minute: '2-digit',
-            hour12: true
         });
 
         row.innerHTML = `
-            <td>${formattedDate}</td>
+            <td class="longtd">${formattedDate}</td>
             <td>${entry.dispensed_amount_kg}</td>
             <td>${entry.eaten_amount_kg}</td>
             <td>${entry.dispenser_status}</td>
