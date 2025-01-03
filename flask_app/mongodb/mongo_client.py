@@ -105,3 +105,29 @@ class MongoDBClient:
             print(f"Failed to get settings in mongo function : {e}")
             return None   
         
+    
+    @mongo_log(action="UPDATE_ONE", collection="settings")
+    def delete_manual_setting(self,index):
+        try:
+            settings = self.get_dispenser_settings()
+            settings["manual_settings"].pop(index)
+            result = self.db.settings.update_one({"settings_id": settings["settings_id"]},
+            {"$set": {"manual_settings": settings["manual_settings"]}})
+        except Exception as e:
+            print(f"Failed to delete manual setting in mongo function : {e}")
+            return None 
+        
+        
+
+    def add_manual_setting(self,time,amount):
+        try:
+            settings = self.get_dispenser_settings()
+            newRow = {'hour':time,'amount':amount}
+            settings["manual_settings"].append(newRow)
+            result = self.db.settings.update_one(
+                {"settings_id": settings["settings_id"]},
+                {"$set": {"manual_settings": settings["manual_settings"]}})
+            return result
+        except Exception as e:
+            print(f"Failed to add manual setting in mongo function : {e}")
+            return None 

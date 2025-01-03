@@ -22,11 +22,14 @@
     max-height: 100%;
     object-fit: contain;
 }
-#switchautomatic {
-  display:none;
+.modeContainerInner {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
 }
-#switchmanual {
-  display:none;
+.settingsTable{
+  max-width:80%;
 }
 
 /* https://getcssscan.com/css-box-shadow-examples border taken from here */

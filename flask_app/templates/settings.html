@@ -9,6 +9,7 @@
     console.log("Data in script:", settings);
     window.addEventListener("load", () => {
         setUIMode(currentMode)
+        loadSettingsTable(settings)
     });
 
     function handleSwitchClick(){
@@ -22,7 +23,30 @@
 <div class="content-container">
     <div class="settingsContainer">
         <div class="modeContainer highlighted" id="automatic-container">
-
+            <div class="modeContainerInner">
+                <h1>Manual Mode</h1>
+                <div class="settingsTable">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Amount(kg)</th>
+                                <th>Remove</th>
+                            </tr>
+                        </thead>
+                        <tbody id="settingsTableBody">
+                            
+                        </tbody>
+                    </table>
+                </div>
+                <div id="settingsInput">
+                    <label for="timeInput">Time in hours:</label>
+                    <input type="number" id="timeInput" placeholder="Input Time"></input>
+                    <label for="amount">Amount in kg:</label>
+                    <input type="number" id="amountInput" placeholder="Input Amount"></input>
+                    <button onclick="addManualSetting()">Add Manual Setting</button>
+                </div>
+            </div>
         </div>
         <button class="switch-mode-button" onclick="handleSwitchClick()">
             <img src="../static/switchLeft.png" class="switchImg" id="switchautomatic" style="display:none" />
