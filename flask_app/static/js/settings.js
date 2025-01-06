@@ -16,31 +16,41 @@ function setUIMode(mode){
     if (mode == "automatic") {
         otherContainer = document.querySelector('#manual-container');
         otherSwitch =  document.querySelector('#switchmanual');
+        otherCover = document.querySelector('#manualCover');
     } else {
         otherContainer = document.querySelector('#automatic-container');
         otherSwitch =  document.querySelector('#switchautomatic');
+        otherCover = document.querySelector('#automaticCover');
     }
     const currentSwitch =  document.querySelector('#switch'+mode);
     const selectedMode = document.querySelector('#'+mode+'-container');
+    const selectedCover = document.querySelector('#'+mode+'Cover');
     selectedMode.classList.add('highlighted');
     otherContainer.classList.remove('highlighted')
     currentSwitch.style.display = "block";
     otherSwitch.style.display = "none";
+    otherCover.style.display="flex";
+    selectedCover.style.display = "none";
 }
 
 function loadSettingsTable(settings) {
     console.log("Settings in function ->", settings);
-    const settingsBody = document.querySelector('#settingsTableBody');
     settings.manual_settings.forEach((element, index) => {
-        const row = `
-        <tr>
-          <td>${element.hour}</td>
-          <td>${element.amount}</td>
-          <td><button onclick="deleteRow(this, ${index})">Delete</button></td>
-        </tr>
-        `;
-        settingsBody.insertAdjacentHTML('beforeend', row);
+      addSettingsTableRow(element,index)
     });
+}
+
+
+function addSettingsTableRow(element,index){
+  const settingsBody = document.querySelector('#settingsTableBody');
+  const row = `
+  <tr>
+    <td>${element.hour}</td>
+    <td>${element.amount}</td>
+    <td><button onclick="deleteRow(this, ${index})">Delete</button></td>
+  </tr>
+  `;
+  settingsBody.insertAdjacentHTML('beforeend', row);
 }
 
 async function addManualSetting(){
@@ -65,6 +75,14 @@ async function addManualSetting(){
           body: JSON.stringify({amount,time})
         });
         if (response.ok) {
+          const settingsBody = document.querySelector('#settingsTableBody');
+          const lastRow = settingsBody.lastElementChild;
+          const newIndex = settingsBody.rows ? settingsBody.rows.length : settingsBody.children.length;
+          console.log("Last row:", lastRow);
+          let element = {};
+          element['hour'] = time;
+          element['amount'] = amount;
+          addSettingsTableRow(element, newIndex);
             timeInputField.value= 0;
             amountInputField.value= 0.5;
             console.log("Successful add")

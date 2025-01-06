@@ -23,6 +23,10 @@
 <div class="content-container">
     <div class="settingsContainer">
         <div class="modeContainer highlighted" id="automatic-container">
+            <div class="coverSettings" id="manualCover">
+                <div class="offTextContainer"><h1 class="OffText">OFF</h1></div>
+                
+            </div>
             <div class="modeContainerInner">
                 <h1>Manual Mode</h1>
                 <div class="settingsTable">
@@ -39,12 +43,16 @@
                         </tbody>
                     </table>
                 </div>
-                <div id="settingsInput">
-                    <label for="timeInput">Time in hours:</label>
-                    <input type="number" id="timeInput" placeholder="Input Time"></input>
-                    <label for="amount">Amount in kg:</label>
-                    <input type="number" id="amountInput" placeholder="Input Amount"></input>
-                    <button onclick="addManualSetting()">Add Manual Setting</button>
+                <div id="settingsInput" >
+                    <div style="width:45%;"  class="settingInputInner">
+                        <input type="time" id="timeInput" placeholder="Input Time" style="width:80%"></input>
+                        <label for="amount">Time</label>
+                    </div>
+                    <div style="width:45%;" class="settingInputInner">
+                    <input type="number" id="amountInput" placeholder="Input Amount"  style="width:80%"></input>
+                    <label for="amount">In Kg</label>
+                    </div>
+                    <button style="margin-top:10px;" onclick="addManualSetting()">Add Manual Setting</button>
                 </div>
             </div>
         </div>
@@ -53,7 +61,12 @@
             <img src="../static/switchRight.png" class="switchImg" id="switchmanual" style="display:none"/>
         </button>
         <div  class="modeContainer" id="manual-container">
-
+            <div class="coverSettings" id="automaticCover">
+                <div class="offTextContainer"><h1 class="OffText">OFF</h1></div>
+            </div>
+            <div class="modeContainerInner">
+                <h1>Automatic Mode</h1>
+            </div>
         </div>
     </div>
 </div>
