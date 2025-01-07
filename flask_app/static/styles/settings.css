@@ -9,10 +9,14 @@
     align-items: center;
     justify-content: space-around;
 }
-.modeContainer{
-    width: 42%;
-    height: 95%;
-    background-color: blanchedalmond;
+.modeContainer {
+  position: relative;
+  width: 42%;
+  height: 95%;
+  background-color: blanchedalmond;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .highlighted {
     box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
@@ -22,11 +26,58 @@
     max-height: 100%;
     object-fit: contain;
 }
-#switchautomatic {
-  display:none;
+.modeContainerInner {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
+    width:100%;
+    height:100%;
 }
-#switchmanual {
-  display:none;
+.settingsTable{
+  max-width:80%;
+  max-height:60%;
+  max-height:60%;
+  width:80%;
+  overflow-x: auto;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+}
+.settingsTable table{
+  border-collapse: collapse;
+}
+.coverSettings {
+  position: absolute;
+  display: flex;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 10;
+  align-items: center;
+  justify-content: center;
+}
+.OffText {
+  color: rgb(188, 2, 2);
+  size:25px;
+  padding:10px;
+}
+.offTextContainer{
+  background-color: black;
+}
+#settingsInput {
+  margin-top:10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+.settingInputInner{
+  display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 /* https://getcssscan.com/css-box-shadow-examples border taken from here */

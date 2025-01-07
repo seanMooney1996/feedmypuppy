@@ -84,6 +84,30 @@ def settings():
         return f"An error occurred: {e}"
     
     
+@app.route('/delete_manual_setting', methods=['POST'])
+def delete_manual_setting():
+    if "google_id" in session:
+        data = request.get_json()
+        print("Data in delete manual setting ",data)
+        result = mongodb.delete_manual_setting(data['index'])
+        print(result)
+        return jsonify({"Succes": True})
+    else:
+        return jsonify({"error": "Unauthorized"}), 401
+
+
+@app.route('/add_manual_setting', methods=['POST'])
+def add_manual_setting():
+    if "google_id" in session:
+        data = request.get_json()
+        print("Data in add manual setting ",data)
+        result = mongodb.add_manual_setting(data['time'],data['amount'])
+        print(result)
+        return jsonify({"Succes": True})
+    else:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    
 @app.route('/login')
 def login():
     try:
