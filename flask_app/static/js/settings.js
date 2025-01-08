@@ -5,11 +5,11 @@ function switchMode(currentMode){
     } else {
         newMode = "automatic"
     }
-    setUIMode(newMode)
+    setUIMode(newMode,true)
     return newMode
 }
 
-function setUIMode(mode){
+function setUIMode(mode,updateDB){
     let otherContainer;
     let otherSwitch;
     console.log("Mode in set ui mode ",mode)
@@ -22,7 +22,6 @@ function setUIMode(mode){
         otherSwitch =  document.querySelector('#switchautomatic');
         otherCover = document.querySelector('#automaticCover');
     }
-    setMode(mode)
     const currentSwitch =  document.querySelector('#switch'+mode);
     const selectedMode = document.querySelector('#'+mode+'-container');
     const selectedCover = document.querySelector('#'+mode+'Cover');
@@ -32,6 +31,10 @@ function setUIMode(mode){
     otherSwitch.style.display = "none";
     otherCover.style.display="flex";
     selectedCover.style.display = "none";
+    if (updateDB==true){
+      setMode(mode)
+    }
+
 }
 
 async function setMode(mode) {
@@ -63,10 +66,11 @@ function loadSettingsTable(settings) {
 
 
 function addSettingsTableRow(element,index){
+  console.log("element in add settings ",element)
   const settingsBody = document.querySelector('#settingsTableBody');
   const row = `
   <tr>
-    <td>${element.hour}</td>
+    <td>${element.time}</td>
     <td>${element.amount}</td>
     <td><button onclick="deleteRow(this, ${index})">Delete</button></td>
   </tr>
@@ -101,10 +105,10 @@ async function addManualSetting(){
           const newIndex = settingsBody.rows ? settingsBody.rows.length : settingsBody.children.length;
           console.log("Last row:", lastRow);
           let element = {};
-          element['hour'] = time;
+          element['time'] = time;
           element['amount'] = amount;
           addSettingsTableRow(element, newIndex);
-            timeInputField.value= 0;
+            timeInputField.value= '00:00';
             amountInputField.value= 0.5;
             console.log("Successful add")
         } else {
@@ -127,6 +131,7 @@ async function deleteRow(button,index) {
         if (response.ok) {
           console.log("Successful delete")
           const row = button.parentNode.parentNode;
+          console.log("row")
           row.parentNode.removeChild(row);
         } else {
             console.log("Fail delete")

@@ -122,7 +122,7 @@ class MongoDBClient:
     def add_manual_setting(self,time,amount):
         try:
             settings = self.get_dispenser_settings()
-            newRow = {'hour':time,'amount':amount}
+            newRow = {'time':time,'amount':amount}
             settings["manual_settings"].append(newRow)
             result = self.db.settings.update_one(
                 {"settings_id": settings["settings_id"]},
