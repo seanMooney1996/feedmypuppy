@@ -22,6 +22,7 @@ function setUIMode(mode){
         otherSwitch =  document.querySelector('#switchautomatic');
         otherCover = document.querySelector('#automaticCover');
     }
+    setMode(mode)
     const currentSwitch =  document.querySelector('#switch'+mode);
     const selectedMode = document.querySelector('#'+mode+'-container');
     const selectedCover = document.querySelector('#'+mode+'Cover');
@@ -32,6 +33,26 @@ function setUIMode(mode){
     otherCover.style.display="flex";
     selectedCover.style.display = "none";
 }
+
+async function setMode(mode) {
+  try {
+    const response = await fetch('/change_settings_mode', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json', 
+      },
+      body: JSON.stringify({mode})
+    });
+    if (response.ok) {
+        console.log("set mode in db")
+    } else {
+        console.log("Fail add setting")
+    }
+  } catch (error) {
+    console.log("Error in add setting ,", error)
+  }
+}
+
 
 function loadSettingsTable(settings) {
     console.log("Settings in function ->", settings);

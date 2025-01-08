@@ -118,7 +118,7 @@ class MongoDBClient:
             return None 
         
         
-
+    @mongo_log(action="UPDATE_ONE", collection="settings")
     def add_manual_setting(self,time,amount):
         try:
             settings = self.get_dispenser_settings()
@@ -130,4 +130,17 @@ class MongoDBClient:
             return result
         except Exception as e:
             print(f"Failed to add manual setting in mongo function : {e}")
+            return None 
+        
+
+    mongo_log(action="UPDATE_ONE", collection="settings")
+    def update_settings_mode(self,settings_mode):
+        try:
+            settings = self.get_dispenser_settings()
+            result = self.db.settings.update_one(
+                {"settings_id": settings["settings_id"]},
+                {"$set": {"mode": settings_mode}})
+            return result
+        except Exception as e:
+            print(f"Failed to update settings mode in mongo function : {e}")
             return None 

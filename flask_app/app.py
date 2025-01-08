@@ -82,7 +82,19 @@ def settings():
         return render_template('settings.html',dispenser_settings = dispenser_settings)
     except Exception as e:
         return f"An error occurred: {e}"
-    
+ 
+ 
+@app.route('/change_settings_mode', methods=['POST'])
+def change_settings_mode():
+    if "google_id" in session:
+        data = request.get_json()
+        print("setting mode->",data)
+        result = mongodb.update_settings_mode(data['mode'])
+        print(result)
+        return jsonify({"Succes": True})
+    else:
+        return jsonify({"error": "Unauthorized"}), 401   
+ 
     
 @app.route('/delete_manual_setting', methods=['POST'])
 def delete_manual_setting():
