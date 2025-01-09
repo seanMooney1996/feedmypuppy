@@ -8,7 +8,7 @@
     console.log("Current mode ",currentMode)
     console.log("Data in script:", settings);
     window.addEventListener("load", () => {
-        setUIMode(currentMode)
+        setUIMode(currentMode,false)
         loadSettingsTable(settings)
     });
 
@@ -45,11 +45,11 @@
                 </div>
                 <div id="settingsInput" >
                     <div style="width:45%;"  class="settingInputInner">
-                        <input type="time" id="timeInput" placeholder="Input Time" style="width:80%"></input>
+                        <input type="time" id="timeInput" value="00:00" placeholder="Input Time" style="width:80%"></input>
                         <label for="amount">Time</label>
                     </div>
                     <div style="width:45%;" class="settingInputInner">
-                    <input type="number" id="amountInput" placeholder="Input Amount"  style="width:80%"></input>
+                    <input type="number" id="amountInput" placeholder="Input Amount" value='0.5'  style="width:80%"></input>
                     <label for="amount">In Kg</label>
                     </div>
                     <button style="margin-top:10px;" onclick="addManualSetting()">Add Manual Setting</button>

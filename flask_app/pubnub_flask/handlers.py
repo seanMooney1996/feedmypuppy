@@ -13,7 +13,10 @@ class Channel_Handler:
     def handle_test_chan(self,data):
         print(f"Handling scan data channel: {data}") 
         self.pubnub_client.publish_message("return_test_chan","Return message")
-        
+    
+    
+    def send_dispense_signal(self,data):
+        self.pubnub_client.publish_message("dispense_listening_chan",data)
 
 
         
