@@ -1,6 +1,6 @@
 from datetime import datetime
 from functools import wraps
-import os
+import os, time, threading
 import pathlib
 from dotenv import load_dotenv
 from flask import Flask, abort, jsonify, redirect, render_template, request, session, url_for
@@ -34,9 +34,6 @@ flow = Flow.from_client_secrets_file(
     redirect_uri = "http://127.0.0.1:5000/login/authorized"
 )
 
-print(f"GOOGLE_CLIENT_ID: {GOOGLE_CLIENT_ID}")
-print(f"Client Secrets File ID: {flow.client_config['client_id']}")
-
 mongodb = MongoDBClient()
 channel_handler = Channel_Handler(mongodb)
 PUBNUB_CIPHER_KEY = Fernet.generate_key().decode()
@@ -45,6 +42,60 @@ pubnub = PubNubClient({"test_chan":channel_handler.handle_test_chan},
                       PUBNUB_CIPHER_KEY)
 channel_handler.add_pubnub_client(pubnub)
 pubnub.subscribe_to_channel("test_chan")
+
+
+# handle sending dispense events from the server
+#get current settings when server spins up
+current_settings = mongodb.get_dispenser_settings()
+
+
+# a condition to stop/start dispense loop
+stop_dispense_loop = False
+
+
+# call anytime client updates the settings,stop dispense loop, start thread again with updated settings 
+def update_current_settings():
+    global current_settings, stop_dispense_loop, dispenser_thread
+    print("UPDATING CURRENT SETTINGS")
+    stop_dispense_loop = True
+    dispenser_thread.join()
+    current_settings = mongodb.get_dispenser_settings()
+    stop_dispense_loop = False
+    dispenser_thread = threading.Thread(target=send_dispense_loop)
+    dispenser_thread.start()
+
+
+#loop to send message to dispenser with amount to feed
+def send_dispense_loop():
+    global stop_dispense_loop,current_settings
+    print("start of dispense loop")
+    feedTimings = []
+    if (current_settings['mode']=='automatic'):
+        feedTimings = current_settings['automatic_settings']['feedTimes']
+    else:
+        feedTimings = current_settings['manual_settings']
+    print("FEED TIMINGS ->",feedTimings)
+    #map each timing to it's dispense amount
+    timing_dict = {item['time']: item['amount'] for item in feedTimings}
+    while stop_dispense_loop == False:
+        current_time = datetime.now().strftime("%H:%M")
+        if current_time in timing_dict:
+            pubnub.publish_message("dispense_listener",timing_dict[current_time])
+            print('Dispense amount -> ',timing_dict[current_time])
+        sleep_until_next_minute()
+
+
+#use to check time every minute for dispense
+def sleep_until_next_minute():
+    now = datetime.now()
+    seconds_to_next_minute = 60 - now.second
+    time.sleep(seconds_to_next_minute)
+
+
+# run dispense loop on a thread
+dispenser_thread = threading.Thread(target=send_dispense_loop)
+dispenser_thread.start()           
+       
 
 
 @app.template_filter('datetimeformat')
@@ -82,7 +133,20 @@ def settings():
         return render_template('settings.html',dispenser_settings = dispenser_settings)
     except Exception as e:
         return f"An error occurred: {e}"
-    
+ 
+ 
+@app.route('/change_settings_mode', methods=['POST'])
+def change_settings_mode():
+    if "google_id" in session:
+        data = request.get_json()
+        print("setting mode->",data)
+        result = mongodb.update_settings_mode(data['mode'])
+        update_current_settings()
+        print(result)
+        return jsonify({"Succes": True})
+    else:
+        return jsonify({"error": "Unauthorized"}), 401   
+ 
     
 @app.route('/delete_manual_setting', methods=['POST'])
 def delete_manual_setting():
@@ -90,6 +154,7 @@ def delete_manual_setting():
         data = request.get_json()
         print("Data in delete manual setting ",data)
         result = mongodb.delete_manual_setting(data['index'])
+        update_current_settings()
         print(result)
         return jsonify({"Succes": True})
     else:
@@ -102,6 +167,7 @@ def add_manual_setting():
         data = request.get_json()
         print("Data in add manual setting ",data)
         result = mongodb.add_manual_setting(data['time'],data['amount'])
+        update_current_settings()
         print(result)
         return jsonify({"Succes": True})
     else:
