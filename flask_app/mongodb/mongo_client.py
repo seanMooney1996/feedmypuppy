@@ -144,3 +144,16 @@ class MongoDBClient:
         except Exception as e:
             print(f"Failed to update settings mode in mongo function : {e}")
             return None 
+        
+
+    def set_automatic_setting(self,automatic_settings):
+        try:
+            print("settings ",automatic_settings)
+            settings = self.get_dispenser_settings()
+            result = self.db.settings.update_one(
+                {"settings_id": settings["settings_id"]},
+                {"$set": {"automatic_settings": automatic_settings}})
+            return result
+        except Exception as e:
+            print(f"Failed to add automatic setting in mongo function : {e}")
+            return None 

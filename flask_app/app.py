@@ -172,6 +172,17 @@ def add_manual_setting():
         return jsonify({"Succes": True})
     else:
         return jsonify({"error": "Unauthorized"}), 401
+    
+
+@app.route('/set_automatic_setting', methods=['POST'])
+def set_automatic_setting():
+    if "google_id" in session:
+        data = request.get_json()
+        result = mongodb.set_automatic_setting(data)
+        print(result)
+        return jsonify({"Succes": True})
+    else:
+        return jsonify({"error": "Unauthorized"}), 401
 
     
 @app.route('/login')
