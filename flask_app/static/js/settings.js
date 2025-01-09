@@ -22,9 +22,11 @@ function setUIMode(mode,updateDB){
         otherSwitch =  document.querySelector('#switchautomatic');
         otherCover = document.querySelector('#automaticCover');
     }
+  
     const currentSwitch =  document.querySelector('#switch'+mode);
     const selectedMode = document.querySelector('#'+mode+'-container');
     const selectedCover = document.querySelector('#'+mode+'Cover');
+    console.log(" mode in select ui mode ",selectedMode)
     selectedMode.classList.add('highlighted');
     otherContainer.classList.remove('highlighted')
     currentSwitch.style.display = "block";
@@ -77,15 +79,17 @@ function loadSettingsTable(settings) {
 
 
 function addSettingsTableRow(element,index){
+  showLoadingOverlay()
   const settingsBody = document.querySelector('#settingsTableBodyManual');
   const row = `
   <tr>
     <td>${element.time}</td>
     <td>${element.amount}</td>
-    <td><button onclick="deleteRow(this, ${index})">Delete</button></td>
+    <td><button id="deleteButton" onclick="deleteRow(this, ${index})">Delete</button></td>
   </tr>
   `;
   settingsBody.insertAdjacentHTML('beforeend', row);
+  hideLoadingOverlay()
 }
 
 function addAutomaticSettingsTableRow(element){
@@ -101,6 +105,7 @@ function addAutomaticSettingsTableRow(element){
 
 
 async function addManualSetting(){
+  showLoadingOverlay()
     const timeInputField = document.querySelector('#timeInput');
     const amountInputField = document.querySelector('#amountInput');
     if (timeInput.value <0 && timeInput.value>24){
@@ -131,6 +136,7 @@ async function addManualSetting(){
             timeInputField.value= '00:00';
             amountInputField.value= 0.5;
             console.log("Successful add")
+            hideLoadingOverlay()
         } else {
             console.log("Fail add setting")
         }
@@ -140,6 +146,7 @@ async function addManualSetting(){
 }
 
 async function addAutomaticSetting(){
+  showLoadingOverlay()
   const startInput = document.querySelector('#startTime');
   const endInput = document.querySelector('#endTime');
   const amountInputField = document.querySelector('#amountInputManual');
@@ -178,7 +185,7 @@ async function addAutomaticSetting(){
         feedTimes.forEach(row => {
           addAutomaticSettingsTableRow(row)
         })
-        
+        hideLoadingOverlay()
           console.log("Successful add")
       } else {
           console.log("Fail add setting")
@@ -208,6 +215,7 @@ function generateTabledData(amount,start,end,freq){
 
 
 async function deleteRow(button,index) {
+  showLoadingOverlay()
     try {
         const response = await fetch('/delete_manual_setting', {
           method: 'POST',
@@ -217,12 +225,10 @@ async function deleteRow(button,index) {
           body: JSON.stringify({ index})
         });
         if (response.ok) {
-          console.log("Successful delete")
           const row = button.parentNode.parentNode;
-          console.log("row")
           row.parentNode.removeChild(row);
+          hideLoadingOverlay()
         } else {
-            console.log("Fail delete")
         }
       } catch (error) {
         console.log("Error in delete ,", error)

@@ -26,3 +26,7 @@
     align-items: center;
     background-color: #f9f9f9;
 }
+.navButton {
+    width:150px;
+    margin:0 10px;
+}

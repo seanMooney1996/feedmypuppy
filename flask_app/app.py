@@ -51,18 +51,25 @@ current_settings = mongodb.get_dispenser_settings()
 
 # a condition to stop/start dispense loop
 stop_dispense_loop = False
-
+thread_lock = threading.Lock()
 
 # call anytime client updates the settings,stop dispense loop, start thread again with updated settings 
 def update_current_settings():
-    global current_settings, stop_dispense_loop, dispenser_thread
-    print("UPDATING CURRENT SETTINGS")
-    stop_dispense_loop = True
-    dispenser_thread.join()
-    current_settings = mongodb.get_dispenser_settings()
-    stop_dispense_loop = False
-    dispenser_thread = threading.Thread(target=send_dispense_loop)
-    dispenser_thread.start()
+    global current_settings, stop_dispense_loop, dispenser_thread, thread_lock
+    #check is there is any threads running and wait for it to stop before starting new dispense loop
+    with thread_lock:  
+        if dispenser_thread is not None and dispenser_thread.is_alive():
+            stop_dispense_loop = True
+            dispenser_thread.join()  
+        stop_dispense_loop = False
+        current_settings = mongodb.get_dispenser_settings()
+        dispenser_thread = threading.Thread(target=send_dispense_loop)
+        dispenser_thread.start()
+
+
+def update_current_settings_thread():
+    update_thread = threading.Thread(target=update_current_settings)
+    update_thread.start()
 
 
 #loop to send message to dispenser with amount to feed
@@ -141,7 +148,7 @@ def change_settings_mode():
         data = request.get_json()
         print("setting mode->",data)
         result = mongodb.update_settings_mode(data['mode'])
-        update_current_settings()
+        update_current_settings_thread()
         print(result)
         return jsonify({"Succes": True})
     else:
@@ -154,7 +161,7 @@ def delete_manual_setting():
         data = request.get_json()
         print("Data in delete manual setting ",data)
         result = mongodb.delete_manual_setting(data['index'])
-        update_current_settings()
+        update_current_settings_thread()
         print(result)
         return jsonify({"Succes": True})
     else:
@@ -167,7 +174,7 @@ def add_manual_setting():
         data = request.get_json()
         print("Data in add manual setting ",data)
         result = mongodb.add_manual_setting(data['time'],data['amount'])
-        update_current_settings()
+        update_current_settings_thread()
         print(result)
         return jsonify({"Succes": True})
     else:
