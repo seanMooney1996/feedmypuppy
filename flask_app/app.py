@@ -38,10 +38,10 @@ mongodb = MongoDBClient()
 channel_handler = Channel_Handler(mongodb)
 PUBNUB_CIPHER_KEY = Fernet.generate_key().decode()
 print("Cipher key in flask server",PUBNUB_CIPHER_KEY)
-pubnub = PubNubClient({"test_chan":channel_handler.handle_test_chan},
+pubnub = PubNubClient({"dispenser_event":channel_handler.handle_dispense_event},
                       PUBNUB_CIPHER_KEY)
 channel_handler.add_pubnub_client(pubnub)
-pubnub.subscribe_to_channel("test_chan")
+pubnub.subscribe_to_channel("dispenser_event")
 
 
 # handle sending dispense events from the server

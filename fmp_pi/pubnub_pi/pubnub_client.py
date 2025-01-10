@@ -12,8 +12,8 @@ from dotenv import load_dotenv
 load_dotenv()
 SECRET_API_KEY=os.getenv('SECRET_API_KEY')
 
-CIPHER_SERVER_URL='http://127.0.0.1:5000/get_cipher_key'
-PUBNUB_TOKEN_URL='http://127.0.0.1:5000/get_pubnub_token'
+CIPHER_SERVER_URL='http://192.168.178.60:5000/get_cipher_key'
+PUBNUB_TOKEN_URL='http://192.168.178.60:5000/get_pubnub_token'
 
 
 class PubNubClient:
@@ -32,6 +32,7 @@ class PubNubClient:
             pnconfig.subscribe_key = os.getenv("SUBSCRIBE_PUBNUB_KEY")
             pnconfig.ssl = True
             token = self.request_auth_token()
+            print("token in pubnubClient ",token)
             pnconfig.auth_key = token
             pnconfig.cipher_key = self.request_cipher_key()
             pnconfig.uuid = os.getenv("PUBNUB_USERID")

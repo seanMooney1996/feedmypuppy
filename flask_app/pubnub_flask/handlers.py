@@ -15,8 +15,9 @@ class Channel_Handler:
         self.pubnub_client.publish_message("return_test_chan","Return message")
     
     
-    def send_dispense_signal(self,data):
-        self.pubnub_client.publish_message("dispense_listening_chan",data)
+    def handle_dispense_event(self,data):
+        print("Event recieved from dispenser ->",data)
+        self.mongodb_client.insert_event(data)
 
 
         

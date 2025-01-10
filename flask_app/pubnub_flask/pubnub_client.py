@@ -66,8 +66,8 @@ class PubNubClient:
     def generate_token_pi(self):
         try:
             channels = [
-            Channel.id("return_test_chan").read(),
-            Channel.id("test_chan").write(),
+            Channel.id("dispense_listener").read(),
+            Channel.id("dispenser_event").write(),
             ]
             envelope = self.pubnub.grant_token().channels(channels).ttl(20).sync()
             return envelope.result.token

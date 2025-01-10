@@ -9,10 +9,10 @@ class Load_Cell:
         SCK_PIN = 19         
         self.dout = DigitalInputDevice(DOUT_PIN)
         self.pd_sck = DigitalOutputDevice(SCK_PIN)
-        self.no_load = 296262.8
         self.scale_factor = 913.94966666666666
+        self.no_load = 296262.8 + (1.6 * self.scale_factor)
         self.full_bowl = 33
-        self.weight_tolerance = 1
+        self.weight_tolerance = 0.5
         
         
     def read_raw(self):
@@ -33,6 +33,7 @@ class Load_Cell:
     def get_weight_in_grams(self):
         raw_value = sum(self.read_raw() for _ in range(10)) / 10
         weight = (raw_value - self.no_load) / self.scale_factor
+        print("weight in grams ",weight)
         return weight
 
 
@@ -42,7 +43,8 @@ class Load_Cell:
     
     
     def is_full_bowl(self):
-        return self.is_within_tolerance(self.get_weight_in_grams(), self.full_bowl)
+        weight_now = self.get_weight_in_grams()
+        return self.is_within_tolerance(weight_now, self.full_bowl) or (weight_now >= self.full_bowl)
 
 
     def is_at_weight(self, weight):
