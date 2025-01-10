@@ -7,6 +7,7 @@ function filterTable(increment, data) {
         const entryDate = new Date(entry.timestamp); 
         return isSameDay(entryDate, dayStarting);
     });
+    setStats(data)
     const whenstring = document.querySelector('#whenstring')
     const nextButton = document.querySelector('#nextButton')
     if (incrementCount === 0) {
@@ -46,10 +47,71 @@ function filterTable(increment, data) {
             <td class="longtd">${formattedDate}</td>
             <td>${entry.dispensed_grams}</td>
             <td>${entry.eaten_grams}</td>
+            <td>${entry.total_not_dispensed}</td>
             <td>${statusMessage}</td>
         `;
         dispenseTable.appendChild(row);
     });
+}
+
+function setStats(data) {
+    let totalEaten = 0
+    let totalDispensed= 0
+    let totalNotDispensed = 0
+    let peekEating = 0
+    let latestEating = 0
+    let earliestEating = 24
+    let hourMap = {}
+    for (let i=0;i<=23; i++){
+        hourMap[i] = 0;
+    }
+    data.forEach(entry => {
+        totalEaten += entry.eaten_grams
+        totalDispensed += entry.dispensed_grams
+        totalNotDispensed += entry.total_not_dispensed
+        timestamp = entry.timestamp
+        const date = new Date(timestamp); 
+        hour = date.getUTCHours();
+        hourMap[hour] += entry.eaten_grams
+        if (entry.eaten_grams > 1){
+            latestEating = Math.max(hour,latestEating)
+            earliestEating = Math.min(hour,earliestEating) 
+        }
+    })
+    let highestEatingHour = -1
+    let maxEatenGrams = 0
+    for (const [hour, grams] of Object.entries(hourMap)) {
+        if (grams > maxEatenGrams) {
+            maxEatenGrams = grams
+            highestEatingHour = hour
+        }
+    }
+    const totalEatenStat = document.querySelector('#totalEatenStat');
+    totalEatenStat.innerHTML = Math.round(totalEaten)+ ' g'
+    const totalDispensedStat = document.querySelector('#totalDispensedStat');
+    totalDispensedStat.innerHTML = Math.round(totalDispensed) + ' g'
+    const totalNotDispensedStat = document.querySelector('#totalNotDispensedStat');
+    totalNotDispensedStat.innerHTML = totalNotDispensed
+    const peekEatingHourStat = document.querySelector('#peekEatingHourStat');
+    const latestEatingHourStat = document.querySelector('#latestEatingHourStat');
+    const earliestEatingStat = document.querySelector('#earliestEatingStat');
+    if (totalEaten != 0){
+        peekEatingHourStat.innerHTML = latestEating + ':00'
+        latestEatingHourStat.innerHTML = latestEating + ':00'
+        earliestEatingStat.innerHTML = earliestEating + ':00'
+    } else {
+        peekEatingHourStat.innerHTML = '-'
+        latestEatingHourStat.innerHTML = '-'
+        earliestEatingStat.innerHTML = '-'
+    }
+    
+    console.log(" Dispenser Statistics")
+    console.log(`Total eaten: ${totalEaten} grams`)
+    console.log(`Total dispensed: ${totalDispensed} grams`)
+    console.log(`Total not dispensed: ${totalNotDispensed} grams`)
+    console.log(`Earliest eating hour: ${earliestEating}:00`)
+    console.log(`Latest eating hour: ${latestEating}:00`)
+    console.log(`Highest eating hour: ${highestEatingHour}:00 with ${maxEatenGrams} grams eaten`)
 }
 
 
