@@ -40,12 +40,13 @@ function filterTable(increment, data) {
             hour: '2-digit',
             minute: '2-digit',
         });
-
+        let statusMessage = ""
+        entry.dispenser_status ? statusMessage = "Yes" : statusMessage = "No"
         row.innerHTML = `
             <td class="longtd">${formattedDate}</td>
-            <td>${entry.dispensed_amount_kg}</td>
-            <td>${entry.eaten_amount_kg}</td>
-            <td>${entry.dispenser_status}</td>
+            <td>${entry.dispensed_grams}</td>
+            <td>${entry.eaten_grams}</td>
+            <td>${statusMessage}</td>
         `;
         dispenseTable.appendChild(row);
     });

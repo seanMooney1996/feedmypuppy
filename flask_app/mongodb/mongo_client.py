@@ -84,6 +84,7 @@ class MongoDBClient:
             print(f"Failed to user by email from MongoDB: {e}")
             return None
  
+ 
     @mongo_log(action="FIND", collection="event")
     def get_feed_data(self):
         try:
@@ -92,7 +93,18 @@ class MongoDBClient:
             return events
         except Exception as e:
             print(f"Failed to get feed data : {e}")
-            return None     
+            return None 
+      
+        
+    @mongo_log(action="INSERT_ONE", collection="event")
+    def insert_event(self,event):
+        try:
+            event = self.event_collection.insert_one(event)
+            print("Inserted event to mongo ",event)
+            return event
+        except Exception as e:
+            print(f"Failed to insert event : {e}")
+            return None      
         
 
     @mongo_log(action="FIND", collection="settings")

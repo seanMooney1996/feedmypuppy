@@ -9,3 +9,11 @@ class Channel_Handler:
     def handle_return_test_chan(self,data):
         print("Handling message in return test chan ",data)
         
+    
+    def handle_return_test_chan(self,data):
+        print("Handling message in return test chan ",data)
+        
+    
+    def handle_dispense_trigger(self,data):
+        print("dispense amount ",data)
+        

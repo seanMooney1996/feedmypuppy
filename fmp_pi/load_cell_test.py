@@ -30,9 +30,9 @@ class HX711:
 
 #values worked out during calibration
 #empty bowl raw number
-no_load = 296262.8
 #scale factor to grams
 scale_factor = 913.94966666666666
+no_load = 296262.8 + (1.6 * scale_factor)
 #weight of bowl full of food
 full_bowl = 33
 
