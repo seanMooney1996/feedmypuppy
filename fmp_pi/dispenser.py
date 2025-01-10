@@ -36,9 +36,11 @@ initial_hourly_weight = get_final_weight()
 total_dispensed_tracker = 0
 total_not_dispensed = 0
 stuck_or_dispenser_empty = False
+dispense_in_progress = False
 
 def dispense_until_weight_or_full(target_weight):
-    global total_dispensed_tracker,total_not_dispensed, stuck_or_dispenser_empty
+    global total_dispensed_tracker,total_not_dispensed, stuck_or_dispenser_empty,dispense_in_progress
+    dispense_in_progress = True
     print("Target weight to dispense ",target_weight)
     previous_weight = get_average_weight()
     total_dispensed = 0
@@ -71,6 +73,7 @@ def dispense_until_weight_or_full(target_weight):
         print("bowl is full")
     elif has_reached_weight:
         print("weight requirement met") 
+    dispense_in_progress= False
      
             
 channel_handler = Channel_Handler()     
@@ -79,7 +82,7 @@ channel_handler.add_pubnub_client(pubnub)
 pubnub.subscribe_to_channel("dispense_listener")
 
 
-def post_hourly_stats():
+def post_stats():
     global total_dispensed_tracker,total_not_dispensed,stuck_or_dispenser_empty, initial_hourly_weight
     final_hour_weight = get_final_weight()
     print("initial weight ", initial_hourly_weight)
@@ -109,23 +112,28 @@ def post_hourly_stats():
 
 def send_event_loop():
     while True:
-        print("Start of hour")
-        wait_until_next_hour()
+        print("Start of wait")
+        wait_until_next_minute(2)
+        #to provent interference with dispense operation
+        while dispense_in_progress == True:
+            time.sleep(10)
         print("Sending stats")
-        post_hourly_stats()
+        post_stats()
 
 
-def wait_until_next_hour():
-    now = datetime.now()
-    seconds_to_next_hour = (60 - now.minute) * 60 - now.second
-    time.sleep(seconds_to_next_hour)
+def wait_until_next_minute(wait_minutes):
+    for i in range(wait_minutes):
+        now = datetime.now()
+        seconds_to_next_minute = 60 - now.second  
+        time.sleep(seconds_to_next_minute)
+
 
 
 def main():
     while True:
         user_input = input("Enter 'stats' to test stats post, 'dispense' to dispense: ")
         if user_input == "stats":
-            post_hourly_stats()
+            post_stats()
         elif user_input == "dispense":
             weight_input = float(input("Input dispense weight in grams: "))
             dispense_until_weight_or_full(weight_input)
