@@ -117,6 +117,8 @@ def login_is_required(function):
         if "logged_in" in session:
             if session["logged_in"] != True:
                 return redirect("/login")
+        else:
+            return redirect("/login")
         return function(*args, **kwargs) 
     return wrapper
 
