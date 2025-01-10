@@ -1,0 +1,12 @@
+calibration data 
+
+#values worked out during calibration
+#empty bowl raw number
+NO_LOAD = 296262.8
+#scale factor to grams
+SCALE_FACTOR = 913.94966666666666
+
+
+full bow = 32.93grams
+
+
