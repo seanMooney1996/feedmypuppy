@@ -49,14 +49,14 @@
                 <img class="icon_stats" src="../static/dog-eating.png" style="width:100%;"/>
             </div>
             <p>Total Eaten</p>
-            <h3>3 g</h3>
+            <h3 id='totalEatenStat' >3 g</h3>
         </div>
      <div  class="halfbox">
         <div class="icon_container">
             <img class="icon_stats" src="../static/dog-food.png" style="width:100%;"/>
         </div>
         <p>Total Dispensed</p>
-            <h3>3 g</h3>
+            <h3 id='totalDispensedStat' >3 g</h3>
         </div>
     </div> 
     <div class="full-box">
@@ -64,28 +64,28 @@
             <div class="icon_container">
                 <img class="icon_stats" src="../static/dont-eat.png" style="width:100%;"/>
             </div>
-            <p>Total Not Eaten</p>
-            <h3>3 g</h3>
+            <p>Total Not Dispensed</p>
+            <h3 id='totalNotDispensedStat' >3 g</h3>
         </div>
         <div  class="halfbox">
             <div class="icon_container">
                 <img class="icon_stats" src="../static/restaurant.png" style="width:100%;"/>
             </div>
             <p>Peek Eating Hour</p>
-            <h3>17.00</h3></div>
+            <h3 id='peekEatingHourStat' >17.00</h3></div>
     </div> 
     <div class="full-box">
         <div class="halfbox">
             <div class="icon_container">
-                <img class="icon_stats" src="../static/sunrise.png" style="width:100%;"/>
+                <img class="icon_stats" src="../static/moon.png"  style="width:100%;"/>
             </div>
             <p>Latest Eating</p>
-            <h3>19.00</h3></div>
+            <h3 id='latestEatingHourStat' >19.00</h3></div>
                 <div class="halfbox">
                     <div class="icon_container">
-                        <img class="icon_stats" src="../static/moon.png" style="width:100%;"/>
+                        <img class="icon_stats" src="../static/sunrise.png" style="width:100%;"/>
                     </div><p>Earliest Eating</p>
-                    <h3>06.00</h3>
+                    <h3 id='earliestEatingStat' >06.00</h3>
                 </div>
     </div>  
 </div>
@@ -97,6 +97,7 @@
                     <th>Timestamp</th>
                     <th>Dispensed (g)</th>
                     <th>Eaten (g)</th>
+                    <th>Not Dispensed (g)</th>
                     <th>Dispenser Empty/Stuck</th>
                 </tr>
             </thead>
