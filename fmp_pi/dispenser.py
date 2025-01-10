@@ -10,7 +10,7 @@ load_cell = Load_Cell()
 
 def get_average_weight():
     weights = []
-    for _ in range(6):
+    for _ in range(3):
         weight = load_cell.get_weight_in_grams() 
         weights.append(weight)
         

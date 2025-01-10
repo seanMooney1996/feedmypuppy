@@ -94,8 +94,9 @@ class MongoDBClient:
         except Exception as e:
             print(f"Failed to get feed data : {e}")
             return None 
+      
         
-    @mongo_log(action="FIND", collection="event")
+    @mongo_log(action="INSERT_ONE", collection="event")
     def insert_event(self,event):
         try:
             event = self.event_collection.insert_one(event)
